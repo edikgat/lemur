@@ -56,11 +56,12 @@ module Lemur
     def get(request_params)
       @response = get_request(request_params)
       json_data = JSON.parse(response.body)
-      if json_data['error_code'].present?
-        raise ApiError, json_data
-      else
-        json_data
+      if json_data.is_a? Hash
+        if json_data['error_code']
+          raise ApiError, json_data
+        end
       end
+      json_data
     end
 
     private
