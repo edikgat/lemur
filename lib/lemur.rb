@@ -7,7 +7,7 @@ module Lemur
 
   class ApiError < StandardError
   end
-  
+
   ODNOKLASSNIKI_API_URL = 'http://api.odnoklassniki.ru/fb.do'
   ODNOKLASSNIKI_NEW_TOKEN_URL = 'http://api.odnoklassniki.ru/oauth/token.do'
 
@@ -58,6 +58,8 @@ module Lemur
       json_data = JSON.parse(response.body)
       if json_data['error_code'].present?
         raise ApiError, json_data
+      else
+        json_data
       end
     end
 
