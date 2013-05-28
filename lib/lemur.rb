@@ -4,6 +4,10 @@ require 'json'
 require 'digest/md5'
 
 module Lemur
+
+  class ApiError < StandardError
+  end
+  
   ODNOKLASSNIKI_API_URL = 'http://api.odnoklassniki.ru/fb.do'
   ODNOKLASSNIKI_NEW_TOKEN_URL = 'http://api.odnoklassniki.ru/oauth/token.do'
 
@@ -51,7 +55,10 @@ module Lemur
 
     def get(request_params)
       @response = get_request(request_params)
-      JSON.parse(response.body)
+      json_data = JSON.parse(response.body)
+      if json_data['error_code'].present?
+        raise ApiError, json_data
+      end
     end
 
     private
