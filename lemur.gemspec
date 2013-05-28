@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["edikgat@gmail.com"]
   spec.description   = %q{Lemur is a lightweight, flexible Ruby SDK for Odnoklassniki.  It allows read/write access to Odnoklassniki API. To work with Lemur you need VALUABLE ACCESS to odnoklassniki api. This api work only with access_token that gives you odnoklassniki, when you authorize with omniauth.}
   spec.summary       = %q{Api for www.odnoklassniki.ru }
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/edikgat/lemur"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
