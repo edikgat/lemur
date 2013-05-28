@@ -4,6 +4,9 @@ require 'json'
 require 'digest/md5'
 
 module Lemur
+  ODNOKLASSNIKI_API_URL = 'http://api.odnoklassniki.ru/fb.do'
+  ODNOKLASSNIKI_NEW_TOKEN_URL = 'http://api.odnoklassniki.ru/oauth/token.do'
+
   class API
     
     def initialize(application_secret_key, application_key,  access_token, application_id = nil, refresh_token = nil)
@@ -17,31 +20,13 @@ module Lemur
 
     attr_reader :security_options, :request_options, :response, :connection
 
-    def start_faraday
-      faraday_options = {
-            :headers['Content-Type'] => 'application/json',
-            :url => 'http://api.odnoklassniki.ru/fb.do'
-          }
-      @connection = init_faraday(faraday_options)
-    end
-
-
-    def init_faraday(faraday_options)
-      Faraday.new(faraday_options) do |faraday|
-            faraday.request  :url_encoded 
-            faraday.response :logger
-            faraday.adapter  Faraday.default_adapter
-      end
-    end
-
-
     def get_new_token
       if @security_options[:application_id].blank? || @security_options[:refresh_token].blank?
         raise ArgumentError, 'wrong number of arguments'
       end
       faraday_options = {
             :headers['Content-Type'] => 'application/json',
-            :url => 'http://api.odnoklassniki.ru/oauth/token.do'
+            :url => Lemur::ODNOKLASSNIKI_NEW_TOKEN_URL
           }
       conn = init_faraday(faraday_options)
       new_token_response = conn.post do |req|
@@ -55,6 +40,21 @@ module Lemur
        @security_options[:access_token] = new_token_response['access_token']
        new_token_response['access_token']
     end
+
+    def get_request(request_params)
+      @request_options = request_params
+      @response = @connection.get do |request|
+                    request.params = final_request_params(@request_options.merge(application_key: security_options[:application_key]),
+                                              security_options[:access_token])
+     end
+   end
+
+    def get(request_params)
+      @response = get_request(request_params)
+      JSON.parse(response.body)
+    end
+
+    private
 
     def final_request_params(request_params, access_token)
       request_params.merge(sig: odnoklassniki_signature(request_params, access_token, security_options[:application_secret_key]),
@@ -70,18 +70,23 @@ module Lemur
       Digest::MD5.hexdigest("#{sorted_params_string}#{secret_part}")
     end
 
-    def get_request(request_params)
-      @request_options = request_params
-      @response = @connection.get do |request|
-                    request.params = final_request_params(@request_options.merge(application_key: security_options[:application_key]),
-                                              security_options[:access_token])
-     end
-   end
-
-    def get(request_params)
-      @response = get_request(request_params)
-      JSON.parse(response.body)
+    def start_faraday
+      faraday_options = {
+            :headers['Content-Type'] => 'application/json',
+            :url => Lemur::ODNOKLASSNIKI_API_URL
+          }
+      @connection = init_faraday(faraday_options)
     end
+
+
+    def init_faraday(faraday_options)
+      Faraday.new(faraday_options) do |faraday|
+            faraday.request  :url_encoded 
+            faraday.response :logger
+            faraday.adapter  Faraday.default_adapter
+      end
+    end
+
 
   end
   
