@@ -9,6 +9,8 @@ Lemur is a lightweight, flexible Ruby SDK for Odnoklassniki. It allows read/writ
 Add this line to your application's Gemfile:
 
     gem 'lemur'
+or instal gem with latest changes
+    gem 'lemur', :git => "git@github.com:edikgat/lemur.git"
 
 And then execute:
 
