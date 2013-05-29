@@ -1,7 +1,7 @@
 require "lemur/version"
 
-require 'json'
 require 'digest/md5'
+require 'multi_json'
 
 module Lemur
 
@@ -40,7 +40,7 @@ module Lemur
                                         client_secret: @security_options[:application_secret_key]
                                        }
                         end
-       new_token_response = JSON.parse(new_token_response.body)
+       new_token_response = MultiJson.load(new_token_response.body)
        @security_options[:access_token] = new_token_response['access_token']
        new_token_response['access_token']
     end
@@ -55,14 +55,14 @@ module Lemur
 
     def get(request_params)
       @response = get_request(request_params)
-      json_data = JSON.parse(response.body)
+      json_data = MultiJson.load(response.body)
       if json_data.is_a? Hash
         if json_data['error_code']
           raise ApiError, json_data
         end
       end
       json_data
-    rescue JSON::ParserError
+    rescue MultiJson::DecodeError
       raise ApiError, @response.body
     end
 
