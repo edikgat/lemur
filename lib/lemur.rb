@@ -62,6 +62,8 @@ module Lemur
         end
       end
       json_data
+    rescue JSON::ParserError
+      raise ApiError, @response.body
     end
 
     private
