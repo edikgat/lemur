@@ -26,7 +26,7 @@ Or install it yourself as:
 To use odnoklassniki api methods you should have [VALUABLE ACCESS](http://dev.odnoklassniki.ru/wiki/pages/viewpage.action?pageId=12878032) to odnoklassniki.
 ###Initialize
 
-    api = Lemur::API.newe(application_secret_key, application_key,  access_token, application_id = nil, refresh_token = nil)
+    api = Lemur::API.new(application_secret_key, application_key,  access_token, application_id = nil, refresh_token = nil)
 
 application_id and refresh_token parameter needed only for 'get_new_token' action
 
