@@ -84,7 +84,6 @@ module Lemur
 
     def start_faraday
       faraday_options = {
-            :headers['Content-Type'] => 'application/json',
             :url => Lemur::ODNOKLASSNIKI_API_URL
           }
       @connection = init_faraday(faraday_options)
