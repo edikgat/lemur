@@ -29,7 +29,6 @@ module Lemur
         raise ArgumentError, 'wrong number of arguments'
       end
       faraday_options = {
-            :headers['Content-Type'] => 'application/json',
             :url => Lemur::ODNOKLASSNIKI_NEW_TOKEN_URL
           }
       conn = init_faraday(faraday_options)
