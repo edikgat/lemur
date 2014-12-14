@@ -94,7 +94,7 @@ module Lemur
     def init_faraday(faraday_options)
       Faraday.new(faraday_options) do |faraday|
             faraday.request  :url_encoded 
-            faraday.response :logger
+            # faraday.response :logger
             faraday.adapter  Faraday.default_adapter
       end
     end
